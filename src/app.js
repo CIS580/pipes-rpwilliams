@@ -48,31 +48,49 @@ canvas.onclick = function(event) {
   var mouseX = event.clientX;
   var mouseY = event.clientY;
 
-  // TODO: Place or rotate pipe tile
   console.log("X" + mouseX);
   console.log("Y" + mouseY);
-  var random = randomType(Math.floor(Math.random() * 6) + 1);
-  console.log(random);
 
-  // Tile 2
-  if(mouseX <= 265 && mouseY <= 130)
-  {
-    pipes.push(new Pipe(random, {x: 131, y: .5}));
-    filledCell[0][1] = true;
-  }
-  // Tile 3
-  else if(mouseX <= 535 && mouseY <= 130)
-  {
-    pipes.push(new Pipe(random, {x: 266, y: .5}));
-  }
+
+  // TODO: Place or rotate pipe tile
+  addPipeWhenClicked(mouseX, mouseY);
+
+  // // Tile 2
+  // if(mouseX <= 265 && mouseY <= 130)
+  // {
+  //   pipes.push(new Pipe(random, {x: 131, y: .5}));
+  //   filledCell[0][1] = true;
+  // }
+  // // Tile 3
+  // else if(mouseX <= 535 && mouseY <= 130)
+  // {
+  //   pipes.push(new Pipe(random, {x: 266, y: .5}));
+  // }
 }
 
-// function getCursorPosition(ctx, event) {
-//     var rect = canvas.getBoundingClientRect();
-//     var x = event.clientX - rect.left;
-//     var y = event.clientY - rect.top;
-//     console.log("x: " + x + " y: " + y);
-// }
+function addPipeWhenClicked(mouseX, mouseY)
+{
+  var random = randomType(Math.floor(Math.random() * 6) + 1);
+  var columnLength = 0;
+  var rowLength = 130;
+  for(var i = 0; i < MAX_ROWS; i++)
+  {
+    for(var j = 0; j < MAX_COLUMNS; j++)
+    {
+      if(mouseX <= rowLength + CELL_SIZE && mouseX >= rowLength
+        && mouseY <= columnLength + CELL_SIZE && mouseY >= columnLength)
+      {
+        pipes.push(new Pipe(random, {x: rowLength + 1, y: columnLength + .5}));
+      }
+      rowLength += CELL_SIZE;
+    }
+    rowLength = 0;  // Reinitialize the row length
+    columnLength += CELL_SIZE;
+  }
+    //console.log("MouseY: " + mouseY);
+    //console.log("Column Length: " + columnLength);
+}
+
 
 function randomType(randomNum) {
   switch(randomNum)
@@ -148,9 +166,9 @@ function render(elapsedTime, ctx) {
       {
         ctx.fillRect(iPos, jPos, CELL_SIZE - 1, CELL_SIZE - 1);
       }
-      console.log("(" + i + "," + j + ") :" + filledCell[i][j]);
-      console.log("iPos: " + iPos);
-      console.log("jPos: " + iPos);
+      // console.log("(" + i + "," + j + ") :" + filledCell[i][j]);
+      // console.log("iPos: " + iPos);
+      // console.log("jPos: " + iPos);
     }
     iPos += CELL_SIZE;
   }
