@@ -3,19 +3,28 @@
 
 /* Classes */
 const Game = require('./game');
+const Pipe = require('./pipe.js');
 
 /* Global variables */
 var canvas = document.getElementById('screen');
 var game = new Game(canvas, update, render);
-var image = new Image();
-image.src = 'assets/pipes.png';
 
-// TODO: Place the pipe tiles on the board in random order
+var pipes = [];
+var startPipe;
+var endPipe;
+//var pipe = new Pipe({x: 0, y: 0});
+
+function init() {
+ 
+  startPipe = pipes.push(new Pipe("vertical", {x:10, y:0} ));
+  endPipe = pipes.push(new Pipe("end", {x :800, y:400} ));
+}
+init();
+
 
 canvas.onclick = function(event) {
   event.preventDefault();
-  // TODO: determine which pipe tile was clicked on
-  // TODO: rotate the pipes in the pipe tile
+  // TODO: Place or rotate pipe tile
 }
 
 /**
@@ -39,7 +48,11 @@ masterLoop(performance.now());
  * the number of milliseconds passed since the last frame.
  */
 function update(elapsedTime) {
-
+  for(var i = 0; i < pipes.length; i++)
+  {
+    pipes[i].update(elapsedTime);
+  }
+  
   // TODO: Advance the fluid
 }
 
@@ -54,11 +67,14 @@ function render(elapsedTime, ctx) {
   ctx.fillStyle = "#777777";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // TODO: Render the board
-
+  for(var i = 0; i < pipes.length; i++)
+  {
+    pipes[i].render(elapsedTime, ctx);
+  }
+  
 }
 
-},{"./game":2}],2:[function(require,module,exports){
+},{"./game":2,"./pipe.js":3}],2:[function(require,module,exports){
 "use strict";
 
 /**
@@ -116,4 +132,85 @@ Game.prototype.loop = function(newTime) {
   this.frontCtx.drawImage(this.backBuffer, 0, 0);
 }
 
+},{}],3:[function(require,module,exports){
+"use strict";
+
+// var image = new Image();
+// image.src = 'assets/pipes.png';
+
+/**
+ * @module exports the pipe class
+ */
+ module.exports = exports = Pipe;
+ var get_type;
+
+/**
+ * @constructor Pipe
+ * Creates a new player object
+ * @param {Postition} position object specifying an x and y
+ */
+ function Pipe(type, position) {
+ 	this.x = position.x;
+  	this.y = position.y;
+  	this.frame = 0;
+  	this.timer = 0;
+  	this.width  = 64;
+	this.height = 64;
+  	this.spritesheet  = new Image();
+  	get_type = type;
+
+  	/* Direction of the pipe */
+  	switch(type) {
+  		case "horizontal":
+  			this.spritesheet.src = encodeURI('assets/pipe_horizontal.png');
+  			break;
+  		case "vertical":
+  			this.spritesheet.src = encodeURI('assets/pipe_vertical.png');
+  			break;
+  		case "corner_top_left":
+  			this.spritesheet.src = encodeURI('assets/pipe_corner_top_left.png');
+  			break;
+  		case "corner_top_right":
+  			this.spritesheet.src = encodeURI('assets/pipe_corner_top_right.png');
+  			break;
+  		case "corner_bottom_left":
+  			this.spritesheet.src = encodeURI('assets/pipe_corner_bottom_left.png');
+  			break;
+  		case "corner_bottom_right":			
+  			this.spritesheet.src = encodeURI('assets/pipe_corner_bottom_right.png');
+  			break;
+  		case "start":			
+  			this.spritesheet.src = encodeURI('assets/spr_c2_start.png');
+  			break;
+  		case "end":			
+  			this.spritesheet.src = encodeURI('assets/pipe_end.png');
+  			break;
+  	}
+  	
+ }
+
+/**
+ * @function updates the player object
+ * {DOMHighResTimeStamp} time the elapsed time since the last frame
+ */
+Pipe.prototype.update = function(time) {
+  
+}
+
+
+/**
+ * @function renders the player into the provided context
+ * {DOMHighResTimeStamp} time the elapsed time since the last frame
+ * {CanvasRenderingContext2D} ctx the context to render into
+ */
+Pipe.prototype.render = function(time, ctx) {
+	ctx.drawImage(
+    // image
+    this.spritesheet,
+    // source rectangle
+    0, 0, this.width*2, this.height*2,
+    // destination rectangle
+    this.x, this.y, this.width*2, this.height*2
+  );
+}
 },{}]},{},[1]);

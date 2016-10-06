@@ -2,12 +2,24 @@
 
 /* Classes */
 const Game = require('./game');
+const Pipe = require('./pipe.js');
 
 /* Global variables */
 var canvas = document.getElementById('screen');
 var game = new Game(canvas, update, render);
-var image = new Image();
-image.src = 'assets/pipes.png';
+
+var pipes = [];
+var startPipe;
+var endPipe;
+//var pipe = new Pipe({x: 0, y: 0});
+
+function init() {
+ 
+  startPipe = pipes.push(new Pipe("vertical", {x:10, y:0} ));
+  endPipe = pipes.push(new Pipe("end", {x :800, y:400} ));
+}
+init();
+
 
 canvas.onclick = function(event) {
   event.preventDefault();
@@ -35,7 +47,11 @@ masterLoop(performance.now());
  * the number of milliseconds passed since the last frame.
  */
 function update(elapsedTime) {
-
+  for(var i = 0; i < pipes.length; i++)
+  {
+    pipes[i].update(elapsedTime);
+  }
+  
   // TODO: Advance the fluid
 }
 
@@ -50,6 +66,9 @@ function render(elapsedTime, ctx) {
   ctx.fillStyle = "#777777";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // TODO: Render the board
-
+  for(var i = 0; i < pipes.length; i++)
+  {
+    pipes[i].render(elapsedTime, ctx);
+  }
+  
 }
