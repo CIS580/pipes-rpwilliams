@@ -9,29 +9,71 @@ const Pipe = require('./pipe.js');
 var canvas = document.getElementById('screen');
 var game = new Game(canvas, update, render);
 
-var pipes = [];
-var startPipe;
-var endPipe;
-//var pipe = new Pipe({x: 0, y: 0});
+var pipes = []; // The array of pipes
+var startPipe;  // The starting pipe at the top left
+var endPipe;    // The ending pipe at the bottom right
+var filledCell = []; // 2D array of the cells that have been visited
+
+/* This is dependent on the grid size */
+const MAX_ROWS = 4;
+const MAX_COLUMNS = 7;
+const CELL_SIZE = 130;
 
 function init() {
- 
-  startPipe = pipes.push(new Pipe("corner_top_left", {x:0, y:0} ));
+  // Initialize the 2D array
+  for(var i = 0; i < MAX_COLUMNS; i++) { 
+    filledCell[i] = [];
+  }
+  
+  // Initialize each index in above 2D array to false
+  for(var i = 0; i < MAX_ROWS; i++) { 
+    for(var j = 0; j < MAX_COLUMNS; j++) { 
+      filledCell[i][j] = false;
+    }
+  }
+
+  startPipe = pipes.push(new Pipe("vertical", {x:0, y:0} ));
   endPipe = pipes.push(new Pipe("end", {x :800, y:400} ));
+
+  filledCell[0][0] = true;
+  filledCell[3][5] = true;
+
+  // console.log("(" + 3 + "," + 5 + ") " + filledCell[2][5]);
 }
 init();
 
 
 canvas.onclick = function(event) {
   event.preventDefault();
+
+  var mouseX = event.clientX;
+  var mouseY = event.clientY;
+
   // TODO: Place or rotate pipe tile
-  console.log(event.clientX);
-  console.log(event.clientY);
+  console.log("X" + mouseX);
+  console.log("Y" + mouseY);
   var random = randomType(Math.floor(Math.random() * 6) + 1);
   console.log(random);
-  pipes.push(new Pipe(random, {x: event.clientX, y: event.clientY}));
+
+  // Tile 2
+  if(mouseX <= 265 && mouseY <= 130)
+  {
+    pipes.push(new Pipe(random, {x: 131, y: .5}));
+    filledCell[0][1] = true;
+  }
+  // Tile 3
+  else if(mouseX <= 535 && mouseY <= 130)
+  {
+    pipes.push(new Pipe(random, {x: 266, y: .5}));
+  }
 }
 
+// function getCursorPosition(ctx, event) {
+//     var rect = canvas.getBoundingClientRect();
+//     var x = event.clientX - rect.left;
+//     var y = event.clientY - rect.top;
+//     console.log("x: " + x + " y: " + y);
+// }
 
 function randomType(randomNum) {
   switch(randomNum)
@@ -96,16 +138,34 @@ function render(elapsedTime, ctx) {
     pipes[i].render(elapsedTime, ctx);
   }
   
-  createGrid(1024, 600, 130, ctx);
+  var iPos = 0;
+  var jPos = 0;
+  for(var i = 0; i < MAX_ROWS; i++)
+  {
+    for(var j = 0; j < MAX_COLUMNS; j++)
+    {
+      jPos += CELL_SIZE;
+      if(filledCell[i][j])
+      {
+        ctx.fillRect(iPos, jPos, CELL_SIZE - 1, CELL_SIZE - 1);
+      }
+      console.log("(" + i + "," + j + ") :" + filledCell[i][j]);
+      console.log("iPos: " + iPos);
+      console.log("jPos: " + iPos);
+    }
+    iPos += CELL_SIZE;
+  }
+
+  createGrid(1024, 600, CELL_SIZE, ctx);
 }
 
-function createGrid(maxX, maxY, squareSize, ctx)
+function createGrid(maxX, maxY, cellSize, ctx)
 {
-  for (var x = 0.5; x < maxX; x += squareSize) {
+  for (var x = 0.5; x < maxX; x += cellSize) {
     ctx.moveTo(x, 0);
     ctx.lineTo(x, maxY);
   }
-  for (var y = 0.5; y < maxY; y += squareSize) {
+  for (var y = 0.5; y < maxY; y += cellSize) {
     ctx.moveTo(0, y);
     ctx.lineTo(maxX, y);
   }
