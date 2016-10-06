@@ -15,7 +15,7 @@ var endPipe;
 
 function init() {
  
-  startPipe = pipes.push(new Pipe("vertical", {x:10, y:0} ));
+  startPipe = pipes.push(new Pipe("corner_top_left", {x:0, y:0} ));
   endPipe = pipes.push(new Pipe("end", {x :800, y:400} ));
 }
 init();
@@ -24,6 +24,30 @@ init();
 canvas.onclick = function(event) {
   event.preventDefault();
   // TODO: Place or rotate pipe tile
+  console.log(event.clientX);
+  console.log(event.clientY);
+  var random = randomType(Math.floor(Math.random() * 6) + 1);
+  console.log(random);
+  pipes.push(new Pipe(random, {x: event.clientX, y: event.clientY}));
+}
+
+
+function randomType(randomNum) {
+  switch(randomNum)
+  {
+    case 1:
+      return "horizontal"; 
+    case 2:
+      return "vertical";
+    case 3:
+      return "corner_top_left";
+    case 4:
+      return "corner_top_right"
+    case 5:
+      return "corner_bottom_left";
+    case 6:
+      return "corner_bottom_right";
+  }
 }
 
 /**
@@ -71,4 +95,22 @@ function render(elapsedTime, ctx) {
     pipes[i].render(elapsedTime, ctx);
   }
   
+  createGrid(1024, 600, 130, ctx);
 }
+
+function createGrid(maxX, maxY, squareSize, ctx)
+{
+  for (var x = 0.5; x < maxX; x += squareSize) {
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, maxY);
+  }
+  for (var y = 0.5; y < maxY; y += squareSize) {
+    ctx.moveTo(0, y);
+    ctx.lineTo(maxX, y);
+  }
+
+  ctx.strokeStyle = "#ddd";
+  ctx.stroke();
+}
+
+

@@ -16,7 +16,7 @@ var endPipe;
 
 function init() {
  
-  startPipe = pipes.push(new Pipe("vertical", {x:10, y:0} ));
+  startPipe = pipes.push(new Pipe("corner_top_left", {x:0, y:0} ));
   endPipe = pipes.push(new Pipe("end", {x :800, y:400} ));
 }
 init();
@@ -25,6 +25,30 @@ init();
 canvas.onclick = function(event) {
   event.preventDefault();
   // TODO: Place or rotate pipe tile
+  console.log(event.clientX);
+  console.log(event.clientY);
+  var random = randomType(Math.floor(Math.random() * 6) + 1);
+  console.log(random);
+  pipes.push(new Pipe(random, {x: event.clientX, y: event.clientY}));
+}
+
+
+function randomType(randomNum) {
+  switch(randomNum)
+  {
+    case 1:
+      return "horizontal"; 
+    case 2:
+      return "vertical";
+    case 3:
+      return "corner_top_left";
+    case 4:
+      return "corner_top_right"
+    case 5:
+      return "corner_bottom_left";
+    case 6:
+      return "corner_bottom_right";
+  }
 }
 
 /**
@@ -72,7 +96,25 @@ function render(elapsedTime, ctx) {
     pipes[i].render(elapsedTime, ctx);
   }
   
+  createGrid(1024, 600, 130, ctx);
 }
+
+function createGrid(maxX, maxY, squareSize, ctx)
+{
+  for (var x = 0.5; x < maxX; x += squareSize) {
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, maxY);
+  }
+  for (var y = 0.5; y < maxY; y += squareSize) {
+    ctx.moveTo(0, y);
+    ctx.lineTo(maxX, y);
+  }
+
+  ctx.strokeStyle = "#ddd";
+  ctx.stroke();
+}
+
+
 
 },{"./game":2,"./pipe.js":3}],2:[function(require,module,exports){
 "use strict";
@@ -157,9 +199,14 @@ Game.prototype.loop = function(newTime) {
   	this.width  = 64;
 	this.height = 64;
   	this.spritesheet  = new Image();
-  	get_type = type;
 
-  	/* Direction of the pipe */
+  	/* 
+  		Direction of the pipe 
+
+  		The following images were created by Naarshakta and
+  		are used under the creative commons license.
+  		Source: http://opengameart.org/content/puzze-pipe-set
+  	*/
   	switch(type) {
   		case "horizontal":
   			this.spritesheet.src = encodeURI('assets/pipe_horizontal.png');
