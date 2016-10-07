@@ -19,6 +19,9 @@ const MAX_ROWS = 4;
 const MAX_COLUMNS = 7;
 const CELL_SIZE = 130;
 
+var x = 0;
+var y = 0;
+var water = [];
 
 
 function init() {
@@ -54,7 +57,6 @@ init();
 canvas.onclick = function(event) {
     event.preventDefault();
 
-
     var audio = new Audio('assets/Pickup_Coin.wav');
     audio.play();
 
@@ -64,37 +66,9 @@ canvas.onclick = function(event) {
     console.log("X" + mouseX);
     console.log("Y" + mouseY);
 
-
     // TODO: Place or rotate pipe tile
     addPipesWhenClicked(mouseX, mouseY);
   }
-
-
-// canvas.onclick = function(event) {
-//   event.preventDefault();
-
-//   var mouseX = event.clientX;
-//   var mouseY = event.clientY;
-
-//   console.log("X" + mouseX);
-//   console.log("Y" + mouseY);
-
-
-//   // TODO: Place or rotate pipe tile
-//   addPipeWhenClicked(mouseX, mouseY);
-
-//   // // Tile 2
-//   // if(mouseX <= 265 && mouseY <= 130)
-//   // {
-//   //   pipes.push(new Pipe(random, {x: 131, y: .5}));
-//   //   filledCell[0][1] = true;
-//   // }
-//   // // Tile 3
-//   // else if(mouseX <= 535 && mouseY <= 130)
-//   // {
-//   //   pipes.push(new Pipe(random, {x: 266, y: .5}));
-//   // }
-// }
 
 function addPipesWhenClicked(mouseX, mouseY)
 {
@@ -128,8 +102,6 @@ function addPipesWhenClicked(mouseX, mouseY)
     //console.log("MouseY: " + mouseY);
     //console.log("Column Length: " + columnLength);
 }
-
-
 
 function randomType(randomNum) {
   switch(randomNum)
@@ -176,8 +148,7 @@ function update(elapsedTime) {
     document.getElementById('score').innerHTML = "Score: " + pipes[i].score;
     document.getElementById('level').innerHTML = "Level: " + pipes[i].level;
   }
-  
-
+ 
   // TODO: Advance the fluid
 }
 
@@ -197,38 +168,6 @@ function render(elapsedTime, ctx) {
     pipes[i].render(elapsedTime, ctx);
   }
 
-  // // Tile 2
-  // if(mouseX <= 265 && mouseY <= 130)
-  // {
-  //   pipes.push(new Pipe(random, {x: 131, y: .5}));
-  //   filledCell[0][1] = true;
-  // }
-  // // Tile 3
-  // else if(mouseX <= 535 && mouseY <= 130)
-  // {
-  //   pipes.push(new Pipe(random, {x: 266, y: .5}));
-  // }
-
-  
-  // var iPos = 0;
-  // var jPos = 0;
-  // for(var i = 0; i < MAX_ROWS; i++)
-  // {
-  //   for(var j = 0; j < MAX_COLUMNS; j++)
-  //   {
-  //     jPos += CELL_SIZE;
-  //     if(filledCell[i][j])
-  //     {
-  //       ctx.fillRect(iPos, jPos, CELL_SIZE - 1, CELL_SIZE - 1);
-  //     }
-  //     // console.log("(" + i + "," + j + ") :" + filledCell[i][j]);
-  //     // console.log("iPos: " + iPos);
-  //     // console.log("jPos: " + iPos);
-  //   }
-  // }
-
-  //   iPos += CELL_SIZE;
-  
 
   drawGrid(1024, 600, CELL_SIZE, ctx);
 }
@@ -243,6 +182,7 @@ function drawGrid(maxX, maxY, cellSize, ctx)
     ctx.moveTo(0, y);
     ctx.lineTo(maxX, y);
   }
+
 
   ctx.strokeStyle = "#ddd";
   ctx.stroke();
@@ -321,6 +261,8 @@ module.exports = exports = Pipe;
 var score = 0;
 var level = 1;
 
+
+
 /**
  * @constructor Pipe
  * Creates a new player object
@@ -337,6 +279,7 @@ function Pipe(type, position) {
   this.type = type;
   this.score = score;
   this.level = level;
+  
 	/* 
 		Direction of the pipe 
 
@@ -378,7 +321,6 @@ function Pipe(type, position) {
 */
 Pipe.prototype.update = function(time) {
   
-
 }
 
 
@@ -396,5 +338,7 @@ Pipe.prototype.update = function(time) {
     // destination rectangle
     this.x, this.y, this.width*2, this.height*2
   );
+
+  
 }
 },{}]},{},[1]);

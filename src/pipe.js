@@ -10,6 +10,8 @@ module.exports = exports = Pipe;
 var score = 0;
 var level = 1;
 
+
+
 /**
  * @constructor Pipe
  * Creates a new player object
@@ -26,6 +28,7 @@ function Pipe(type, position) {
   this.type = type;
   this.score = score;
   this.level = level;
+  
 	/* 
 		Direction of the pipe 
 
@@ -67,7 +70,6 @@ function Pipe(type, position) {
 */
 Pipe.prototype.update = function(time) {
   
-
 }
 
 
@@ -85,4 +87,6 @@ Pipe.prototype.update = function(time) {
     // destination rectangle
     this.x, this.y, this.width*2, this.height*2
   );
+
+  
 }
