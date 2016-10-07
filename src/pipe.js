@@ -7,7 +7,8 @@
  * @module exports the pipe class
 */
 module.exports = exports = Pipe;
-var get_type;
+var score = 0;
+var level = 1;
 
 /**
  * @constructor Pipe
@@ -22,7 +23,9 @@ function Pipe(type, position) {
   this.width  = 64;
   this.height = 64;
   this.spritesheet  = new Image();
-
+  this.type = type;
+  this.score = score;
+  this.level = level;
 	/* 
 		Direction of the pipe 
 
@@ -64,6 +67,7 @@ function Pipe(type, position) {
 */
 Pipe.prototype.update = function(time) {
   
+
 }
 
 

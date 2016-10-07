@@ -2,3 +2,30 @@ canvas#screen {
   border: 2px solid #333;
   box-shadow: 4px 4px 4px #777;
 }
+
+.score {
+  width: 760px;
+  height: 480px;
+  
+
+  position: absolute;
+  top: 0;
+  bottom: 10%;
+  left: 12%;
+  right: 0;
+
+  margin: auto;
+}
+.level {
+  width: 760px;
+  height: 480px;
+  
+
+  position: absolute;
+  top: 0;
+  bottom: 10%;
+  left: 0;
+  right: 59%;
+
+  margin: auto;
+}

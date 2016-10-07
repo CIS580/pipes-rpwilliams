@@ -19,6 +19,8 @@ const MAX_ROWS = 4;
 const MAX_COLUMNS = 7;
 const CELL_SIZE = 130;
 
+
+
 function init() {
   // Initialize the 2D array
   for(var i = 0; i < MAX_COLUMNS; i++) { 
@@ -32,44 +34,69 @@ function init() {
     }
   }
 
-  startPipe = pipes.push(new Pipe("vertical", {x:0, y:0} ));
+  startPipe = pipes.push(new Pipe("horizontal", {x:0, y:0} ));
   endPipe = pipes.push(new Pipe("end", {x :800, y:400} ));
 
   filledCell[0][0] = true;
   filledCell[3][5] = true;
 
+  /* 
+    Audio used under the public domain license by Kevin MacLeod
+    https://gamesounds.xyz/?dir=Public%20Domain/Ambient
+  */
+  var audio = new Audio('assets/Ambient B.mp3');
+  audio.play();
+  
   // console.log("(" + 3 + "," + 5 + ") " + filledCell[2][5]);
 }
 init();
 
-
 canvas.onclick = function(event) {
-  event.preventDefault();
-
-  var mouseX = event.clientX;
-  var mouseY = event.clientY;
-
-  console.log("X" + mouseX);
-  console.log("Y" + mouseY);
+    event.preventDefault();
 
 
-  // TODO: Place or rotate pipe tile
-  addPipeWhenClicked(mouseX, mouseY);
+    var audio = new Audio('assets/Pickup_Coin.wav');
+    audio.play();
 
-  // // Tile 2
-  // if(mouseX <= 265 && mouseY <= 130)
-  // {
-  //   pipes.push(new Pipe(random, {x: 131, y: .5}));
-  //   filledCell[0][1] = true;
-  // }
-  // // Tile 3
-  // else if(mouseX <= 535 && mouseY <= 130)
-  // {
-  //   pipes.push(new Pipe(random, {x: 266, y: .5}));
-  // }
-}
+    var mouseX = event.clientX;
+    var mouseY = event.clientY;
 
-function addPipeWhenClicked(mouseX, mouseY)
+    console.log("X" + mouseX);
+    console.log("Y" + mouseY);
+
+
+    // TODO: Place or rotate pipe tile
+    addPipesWhenClicked(mouseX, mouseY);
+  }
+
+
+// canvas.onclick = function(event) {
+//   event.preventDefault();
+
+//   var mouseX = event.clientX;
+//   var mouseY = event.clientY;
+
+//   console.log("X" + mouseX);
+//   console.log("Y" + mouseY);
+
+
+//   // TODO: Place or rotate pipe tile
+//   addPipeWhenClicked(mouseX, mouseY);
+
+//   // // Tile 2
+//   // if(mouseX <= 265 && mouseY <= 130)
+//   // {
+//   //   pipes.push(new Pipe(random, {x: 131, y: .5}));
+//   //   filledCell[0][1] = true;
+//   // }
+//   // // Tile 3
+//   // else if(mouseX <= 535 && mouseY <= 130)
+//   // {
+//   //   pipes.push(new Pipe(random, {x: 266, y: .5}));
+//   // }
+// }
+
+function addPipesWhenClicked(mouseX, mouseY)
 {
   var random = randomType(Math.floor(Math.random() * 6) + 1);
   var columnLength = 0;
@@ -78,12 +105,22 @@ function addPipeWhenClicked(mouseX, mouseY)
   {
     for(var j = 0; j < MAX_COLUMNS; j++)
     {
+      // if(filledCell[i][j])
+      // {
+      //   pipes[2].type = random;
+      // }
+
+      // Add a pipe where the mouse was clicked
       if(mouseX <= rowLength + CELL_SIZE && mouseX >= rowLength
         && mouseY <= columnLength + CELL_SIZE && mouseY >= columnLength)
-      {
+      {        
         pipes.push(new Pipe(random, {x: rowLength + 1, y: columnLength + .5}));
+        filledCell[i][j] = true;
+        console.log("(" + i +  "," + j + ") : " + filledCell[i][j]);
+        console.log("rowLength: " + rowLength);
+        console.log("columnLength: " + columnLength);
       }
-      rowLength += CELL_SIZE;
+      rowLength += CELL_SIZE;  
     }
     rowLength = 0;  // Reinitialize the row length
     columnLength += CELL_SIZE;
@@ -91,6 +128,7 @@ function addPipeWhenClicked(mouseX, mouseY)
     //console.log("MouseY: " + mouseY);
     //console.log("Column Length: " + columnLength);
 }
+
 
 
 function randomType(randomNum) {
@@ -135,8 +173,11 @@ function update(elapsedTime) {
   for(var i = 0; i < pipes.length; i++)
   {
     pipes[i].update(elapsedTime);
+    document.getElementById('score').innerHTML = "Score: " + pipes[i].score;
+    document.getElementById('level').innerHTML = "Level: " + pipes[i].level;
   }
   
+
   // TODO: Advance the fluid
 }
 
@@ -155,29 +196,44 @@ function render(elapsedTime, ctx) {
   {
     pipes[i].render(elapsedTime, ctx);
   }
-  
-  var iPos = 0;
-  var jPos = 0;
-  for(var i = 0; i < MAX_ROWS; i++)
-  {
-    for(var j = 0; j < MAX_COLUMNS; j++)
-    {
-      jPos += CELL_SIZE;
-      if(filledCell[i][j])
-      {
-        ctx.fillRect(iPos, jPos, CELL_SIZE - 1, CELL_SIZE - 1);
-      }
-      // console.log("(" + i + "," + j + ") :" + filledCell[i][j]);
-      // console.log("iPos: " + iPos);
-      // console.log("jPos: " + iPos);
-    }
-    iPos += CELL_SIZE;
-  }
 
-  createGrid(1024, 600, CELL_SIZE, ctx);
+  // // Tile 2
+  // if(mouseX <= 265 && mouseY <= 130)
+  // {
+  //   pipes.push(new Pipe(random, {x: 131, y: .5}));
+  //   filledCell[0][1] = true;
+  // }
+  // // Tile 3
+  // else if(mouseX <= 535 && mouseY <= 130)
+  // {
+  //   pipes.push(new Pipe(random, {x: 266, y: .5}));
+  // }
+
+  
+  // var iPos = 0;
+  // var jPos = 0;
+  // for(var i = 0; i < MAX_ROWS; i++)
+  // {
+  //   for(var j = 0; j < MAX_COLUMNS; j++)
+  //   {
+  //     jPos += CELL_SIZE;
+  //     if(filledCell[i][j])
+  //     {
+  //       ctx.fillRect(iPos, jPos, CELL_SIZE - 1, CELL_SIZE - 1);
+  //     }
+  //     // console.log("(" + i + "," + j + ") :" + filledCell[i][j]);
+  //     // console.log("iPos: " + iPos);
+  //     // console.log("jPos: " + iPos);
+  //   }
+  // }
+
+  //   iPos += CELL_SIZE;
+  
+
+  drawGrid(1024, 600, CELL_SIZE, ctx);
 }
 
-function createGrid(maxX, maxY, cellSize, ctx)
+function drawGrid(maxX, maxY, cellSize, ctx)
 {
   for (var x = 0.5; x < maxX; x += cellSize) {
     ctx.moveTo(x, 0);
@@ -262,7 +318,8 @@ Game.prototype.loop = function(newTime) {
  * @module exports the pipe class
 */
 module.exports = exports = Pipe;
-var get_type;
+var score = 0;
+var level = 1;
 
 /**
  * @constructor Pipe
@@ -277,7 +334,9 @@ function Pipe(type, position) {
   this.width  = 64;
   this.height = 64;
   this.spritesheet  = new Image();
-
+  this.type = type;
+  this.score = score;
+  this.level = level;
 	/* 
 		Direction of the pipe 
 
@@ -319,6 +378,7 @@ function Pipe(type, position) {
 */
 Pipe.prototype.update = function(time) {
   
+
 }
 
 
